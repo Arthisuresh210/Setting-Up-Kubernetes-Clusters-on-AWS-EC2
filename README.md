@@ -92,7 +92,7 @@ Connect both your Master-node and Worker-node using EC2 Connect and establish co
 ![image](https://github.com/user-attachments/assets/46cbc00a-d88a-4ec4-b507-ae13bdbdce1e)
 
 # Basic steps to be done in both Master & worker node after connection.
-# “NOTE: I HAVE ONLY ADDED THE SCREENSHOT OF MASTER-NODE BUT SAME STEPS SHOULD BE DONE IN WORKER-NODE ALSO”
+ “NOTE: I HAVE ONLY ADDED THE SCREENSHOT OF MASTER-NODE BUT SAME STEPS SHOULD BE DONE IN WORKER-NODE ALSO”
 
 # Step 1: Login as root user:
 sudo su
