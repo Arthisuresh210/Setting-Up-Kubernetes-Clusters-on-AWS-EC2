@@ -96,8 +96,101 @@ Connect both your Master-node and Worker-node using EC2 Connect and establish co
 
 # Step 1: Login as root user:
 sudo su
+
 # Step 2: Get the updates
 apt-get update
+
+# Step 3: Install HTTPS:
+Installing an HTTP server enhances the functionality of a Kubernetes cluster, allowing for better traffic management, service exposure, and application health monitoring, making it essential for deploying web-based applications.
+
+apt-get install apt-transport-https
+
+# Installing Docker: (Both in master and worker node)
+apt install docker.io -y
+
+# To check docker is installed :
+docker — version
+
+# To start the docker:
+systemctl start docker
+systemctl enable docker
+
+# Install Open GPG Key:
+Installing a GPG key during Kubernetes cluster setup is a crucial security measure that ensures the authenticity and integrity of the packages being installed, protecting the cluster from potential threats.
+
+sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+
+After installing use command apt-get update
+
+# Edit source list file:
+nano /etc/apt/sources.list.d/kubernetes.list
+Add the below line in the above file:
+deb http://apt.kubernetes.io/ kubernetes-xenial main
+Press (Ctrl X Y Enter)
+
+# Setting Up Kubernetes with kubeadm:
+Installing kubeadm, kubelet, and kubectl:
+sudo apt-get update
+ apt-transport-https may be a dummy package; if so, you can skip that package
+
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+
+2.  If the directory `/etc/apt/keyrings` does not exist, it should be created before the curl command, read the note below.
+
+ sudo mkdir -p -m 755 /etc/apt/keyrings
+
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | sudo gpg — dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+3.  This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
+
+echo ‘deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /’ | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+4. sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+
+5. sudo systemctl enable — now kubelet
+Use these above commands to install kubeadm, kubelet, and kubectl
+
+# Initializing the Kubernetes Cluster:
+kubeadm init
+This command should be given in only MASTER-NODE
+
+After k8’s control-plane successfully initialized it gives you few commands to start the cluster, copy and paste
+
+mkdir -p $HOME/.kube Copy configuration to kube directory (in config file) cp -i /etc/kubernetes/admin.conf HOME/.kube/configProvideuserpermissionstoconfigfilechown(id -u):$(id -g) $HOME/.kube/config
+
+Also copy ,paste the root user command also.
+
+Keep the kubeadm join command as it is we will install network tool and paste te join command in worker-node.
+
+# Networking Setup with Flannel:
+Flannel is an open-source networking solution for Kubernetes that provides pod-to-pod communication across nodes in a cluster. It is a CNI (Container Network Interface) plugin, and its main purpose is to set up a reliable overlay network between Kubernetes nodes so that containers (pods) can communicate with each other, even if they are running on different nodes.
+
+# To install flannel
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+# After installing networking tool give
+kubectl get node
+
+# Joining Worker Node to the Cluster:
+Copy the join command in the master-node and paste it in the worker-node to join all the nodes with cluster.
+
+COPY LONG CODE PROVIDED MY MASTER IN NODE NOW LIKE CODE GIVEN BELOW kubeadm join 172.31.14.32:6443 — token mcvd2n.aqvyp59vq3inhtks — discovery-token-ca-cert-hash sha256:9b6b9558ef85d46e805d9a24c4186d7918bced4986cf4503769f46be758e5dc
+
+This command should be give in WORKER-NODE
+
+# Verifying Cluster Status:
+Checking Node Status:
+To check node status use the below command:
+
+kubectl get nodes
+
+The both master-node and worker-node should show status as Ready.
+
+# Conclusion:
+In this hands-on guide, we set up a basic Kubernetes cluster on AWS EC2 using Ubuntu, Docker, and kubeadm, with Flannel for networking. We successfully configured one master node and one worker node, both in ready status. This cluster is now fully operational and ready for deploying containerized applications or scaling with additional nodes. It provides a solid foundation for further Kubernetes exploration on cloud infrastructure.
+
 
 
 
